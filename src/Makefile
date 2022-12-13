@@ -1,16 +1,21 @@
 CC=g++
-CFLAGS=-g -Wall -Werror
+CFLAGS=-g -Wall -Werror -MP -MD
 NAME=test
 SRC= $(wildcard *.cpp)
 OBJS= $(SRC:.cpp=.o)
 
-all: $(NAME)
+.PHONY: all $(SUBDIRS)
+
+all: $(SUBDIRS) $(NAME)
+
+$(SUBDIRS):
+	make -C $@
 
 $(NAME): $(OBJS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 .cpp.o:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $< $(INCFLAGS)
 
 clean:
-	rm -rvf $(NAME) *.o
+	rm -rvf $(NAME) *.o *.d
